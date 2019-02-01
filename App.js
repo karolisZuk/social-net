@@ -1,34 +1,63 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Firebase from './Firebase';
-import Input from './components/Input';
-import Button from './components/Button';
+import { Input } from './components/Input';
+import { Button } from './components/Button';
 
 export default class App extends React.Component {
+  state = {
+    email: '',
+    password: '',
+    authenticating: false
+  }
 
-  onTextChange(text) {
-    console.log(`text changed ${text}`);
+  componentWillMount() {
+    Firebase.init();
   }
 
   onPressSignIn() {
-    console.log('User is trying to sign in!');
+    console.log(this.state);
+    this.setState({authenticating: true})
+  }
+
+  onPressRegister() {
+
+  }
+
+  renderCurrentState() {
+    if(this.state.authenticating){
+      return (
+        <View style={styles.form}>
+          <ActivityIndicator size='large' />
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.form}>
+          <Input 
+            placeholder='Enter your email'
+            label='Email'
+            onChangeText={email => this.setState({ email })}
+            value = {this.state.email}
+          />
+          <Input 
+          placeholder='Enter your password'
+          label='Password'
+          secureTextEntry
+          onChangeText={password => this.setState({ password })}
+          value = {this.state.password}
+          />
+          <Button onPress={() => this.onPressSignIn()}>Log in</Button>
+          <Button onPress={() => this.onPressRegister()}>Register</Button>
+        </View>
+      )
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Input 
-          placeholder='Enter your email'
-          label='Email'
-          onChangeText={email => this.onTextChange(email)}
-        />
-        <Input 
-        placeholder='Enter your password'
-        label='Password'
-        secureTextEntry
-        onChangeText={password => this.onTextChange(password)}
-        />
-        <Button onPress={() => this.onPressSignIn()}>Log in</Button>
+        {this.renderCurrentState()}
       </View>
     );
   }
@@ -39,6 +68,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  form: {
+    flex: 1
   }
 });

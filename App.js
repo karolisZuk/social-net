@@ -1,17 +1,17 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Firebase from './Firebase';
-import { Input } from './components/Input';
-import { Button } from './components/Button';
+import Input from './components/Input';
+import Button from './components/Button';
 
 export default class App extends React.Component {
-  state = {
-    email: '',
-    password: ''
+
+  onTextChange(text) {
+    console.log(`text changed ${text}`);
   }
 
-  componentWillMount() {
-    Firebase.init();
+  onPressSignIn() {
+    console.log('User is trying to sign in!');
   }
 
   render() {
@@ -20,17 +20,15 @@ export default class App extends React.Component {
         <Input 
           placeholder='Enter your email'
           label='Email'
-          onChangeText={email => this.setState({ email })}
-          value = {this.state.email}
+          onChangeText={email => this.onTextChange(email)}
         />
         <Input 
         placeholder='Enter your password'
         label='Password'
         secureTextEntry
-        onChangeText={password => this.setState({ password })}
-        value = {this.state.password}
+        onChangeText={password => this.onTextChange(password)}
         />
-        <Button onPress={() => console.log(this.state)}>Log in</Button>
+        <Button onPress={() => this.onPressSignIn()}>Log in</Button>
       </View>
     );
   }
@@ -39,6 +37,8 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 50
+    padding: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });

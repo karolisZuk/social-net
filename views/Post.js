@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet } from 'react-native';
 
-export default class Home extends Component {
+export default class Post extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>This page will show news feed</Text>
+        <Text>Post stuff from here</Text>
       </View>
     )
   }

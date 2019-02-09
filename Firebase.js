@@ -3,6 +3,7 @@ import fbConfig from './config';
 
 export default class Firebase {
     static auth;
+    static googleSignInProvider;
     static fb;
     static user;
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet } from 'react-native';
 import Firebase from '../Firebase';
-import { Button } from '../components/Button';
+import { PrimaryButton } from '../components/PrimaryButton';
 
 export default class Settings extends Component {
     state = {
@@ -45,7 +45,7 @@ export default class Settings extends Component {
                 <Text style={styles.value}>{new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(this.state.user.createdAt)}</Text>
             </View>
             <View style={styles.buttonContainer}>
-                <Button onPress={() => this.logout()}>Logout</Button>
+                <PrimaryButton onPress={() => this.logout()}>Logout</PrimaryButton>
             </View>
         </View>
         )

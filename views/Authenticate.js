@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet, View, Text } from 'react-native';
 import Firebase from '../Firebase';
 import { Input } from '../components/Input';
-import { Button } from '../components/Button';
+import { PrimaryButton } from '../components/PrimaryButton';
 import FlashMessage, { showMessage } from "react-native-flash-message";
 
 export default class Authenticate extends React.Component {
@@ -11,7 +11,7 @@ export default class Authenticate extends React.Component {
         email: '',
         password: '',
         error: '',
-        authenticating: false
+        authenticating: true
     }
 
     componentDidMount(){
@@ -23,18 +23,20 @@ export default class Authenticate extends React.Component {
     }
     componentWillMount() {
         if (!Firebase.fb) {
-        Firebase.init();
+            Firebase.init();
         }
-        Firebase.auth.onAuthStateChanged((user) => {
+        Firebase.auth.onAuthStateChanged(user => {
             if (user) {
-            Firebase.user = user;
-            this.props.navigation.replace('Home');
+                Firebase.user = user;
+                this.props.navigation.replace('Home');
+            } if (this._isMounted){
+                this.setState({authenticating: false});
             }
         });
     }
 
     onPressSignIn() {
-        if(this._isMounted){
+        if (this._isMounted){
         this.setState({authenticating: true});
         const {email, password} = this.state;
         Firebase.auth.signInWithEmailAndPassword(email, password)
@@ -99,8 +101,8 @@ export default class Authenticate extends React.Component {
             onChangeText={password => this.setState({ password })}
             value = {this.state.password}
             />
-            <Button onPress={() => this.onPressSignIn()}>Log in</Button>
-            <Button onPress={() => this.onPressRegister()}>Register</Button>
+            <PrimaryButton onPress={() => this.onPressSignIn()}>Log in</PrimaryButton>
+            <PrimaryButton onPress={() => this.onPressRegister()}>Register</PrimaryButton>
             </View>
         )
         }

@@ -1,46 +1,26 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View, Text } from 'react-native';
+import {StyleSheet, View, Text } from 'react-native';
 import Firebase from '../Firebase';
 import { Input } from '../components/Input';
-import { Button } from '../components/Button';
-import FlashMessage, { showMessage } from "react-native-flash-message";
+import { ButtonPrimary, ButtonSecondary } from '../components/Buttons';
 
 export default class Authenticate extends React.Component {
-  state = {
-    email: '',
-    password: '',
-    error: '',
-    isLoading: false
-  }
-
-  componentWillMount() {
-    if (!Firebase.fb) {
-        Firebase.init();
+    state = {
+        email: '',
+        password: '',
+        error: '',
+        isLoading: false
     }
-    Firebase.auth.onAuthStateChanged((user) => {
-        if (user) {
-            this.props.navigation.navigate('Home');
+
+    componentWillMount() {
+        // tikrinam ar inicializavom firebase. jei ne - inicializuojam
+        if (!Firebase.fb) {
+            Firebase.init();
         }
-     });
-  }
+    }
 
   onPressSignIn() {
-    this.setState({isLoading: true, error: ''});
-    const {email, password} = this.state;
-    Firebase.auth.signInWithEmailAndPassword(email, password)
-        .then(response => {
-            Firebase.user = response;
-            this.setState({isLoading: false});
-            this.props.navigation.navigate('Home');
-        }).catch(err => {
-            this.setState({error: err+ ''});
-            showMessage({
-                message: this.state.error,
-                type: "danger",
-              });
-        }).finally(()=>{
-            this.setState({isLoading: false});
-        });
+    console.log(this.state);
   }
 
   onPressRegister() {
@@ -58,64 +38,48 @@ export default class Authenticate extends React.Component {
         }).catch(err => {
             // err paverciame i stringa pridedami prie jo tuscia stringa.
             this.setState({error: err+ ''});
-            showMessage({
-                message: this.state.error,
-                type: "danger",
-              });
+                console.log(this.state.error);
+            //TODO cia reiktu rodyti zinute su error message
+
             this.setState({isLoading: false});
         })
   }
 
-  renderCurrentState() {
-    if(this.state.isLoading){
-      return (
-        <View style={styles.form}>
-          <ActivityIndicator size='large' />
-        </View>
-      )
-    } else {
-      return (
-        <View style={styles.form}>
-        <Text>Welcome</Text>
-          <Input 
-            placeholder='Enter your email'
-            label='Email'
-            onChangeText={email => this.setState({ email })}
-            value = {this.state.email}
-          />
-          <Input 
-          placeholder='Enter your password'
-          label='Password'
-          secureTextEntry
-          onChangeText={password => this.setState({ password })}
-          value = {this.state.password}
-          />
-          <Button onPress={() => this.onPressSignIn()}>Log in</Button>
-          <Button onPress={() => this.onPressRegister()}>Register</Button>
-        </View>
-      )
+    render() {
+        return (
+            <View style={styles.container}>
+                <View style={styles.form}>
+                    <Text>Welcome</Text>
+                    <Input 
+                        placeholder='Enter your email'
+                        label='Email'
+                        onChangeText={email => this.setState({ email })}
+                        value = {this.state.email}
+                    />
+                    <Input 
+                        placeholder='Enter your password'
+                        label='Password'
+                        secureTextEntry
+                        onChangeText={password => this.setState({ password })}
+                        value = {this.state.password}
+                    />
+                    <ButtonPrimary onPress={() => this.onPressSignIn()}>Log in</ButtonPrimary>
+                    <ButtonSecondary onPress={() => this.onPressRegister()}>Register</ButtonSecondary>
+                </View>
+            </View>
+            );
+        }
     }
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        {this.renderCurrentState()}
-        <FlashMessage position="top" />
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row'
-  },
-  form: {
-    flex: 1
-  }
+    container: {
+        flex: 1,
+        padding: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row'
+    },
+    form: {
+        flex: 1
+    }
 });

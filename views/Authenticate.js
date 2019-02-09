@@ -10,7 +10,7 @@ export default class Authenticate extends React.Component {
     email: '',
     password: '',
     error: '',
-    authenticating: false
+    isLoading: false
   }
 
   componentWillMount() {
@@ -19,49 +19,55 @@ export default class Authenticate extends React.Component {
     }
     Firebase.auth.onAuthStateChanged((user) => {
         if (user) {
-            this.props.navigation.replace('Home');
+            this.props.navigation.navigate('Home');
         }
      });
   }
 
   onPressSignIn() {
-    this.setState({authenticating: true});
+    this.setState({isLoading: true, error: ''});
     const {email, password} = this.state;
     Firebase.auth.signInWithEmailAndPassword(email, password)
         .then(response => {
-            this.setState({error: '', loading: false});
             Firebase.user = response;
-            this.setState({authenticating: false});
-            this.props.navigation.replace('Home');
+            this.setState({isLoading: false});
+            this.props.navigation.navigate('Home');
         }).catch(err => {
             this.setState({error: err+ ''});
             showMessage({
                 message: this.state.error,
                 type: "danger",
               });
-        })
+        }).finally(()=>{
+            this.setState({isLoading: false});
+        });
   }
 
   onPressRegister() {
-    this.setState({authenticating: true});
+      //pradedame rodyti, kad puslapis kraunasi
+    this.setState({isLoading: true});
     const {email, password} = this.state;
     Firebase.auth.createUserWithEmailAndPassword(email, password)
         .then(response => {
-            this.setState({error: '', loading: false});
+            // Isvalome klaidas ir nustojame rodyti puslapio krovimasi
+            this.setState({error: '', isLoading: false});
+            // Teisingai prisiregistravus response gauname user objekta
             Firebase.user = response;
-            this.setState({authenticating: false});
-            this.props.navigation.replace('Home');
+            // Siuos props gauname is AppNavigator, kurio viduje yra sis komponentas
+            this.props.navigation.navigate('Home');
         }).catch(err => {
+            // err paverciame i stringa pridedami prie jo tuscia stringa.
             this.setState({error: err+ ''});
             showMessage({
                 message: this.state.error,
                 type: "danger",
               });
+            this.setState({isLoading: false});
         })
   }
 
   renderCurrentState() {
-    if(this.state.authenticating){
+    if(this.state.isLoading){
       return (
         <View style={styles.form}>
           <ActivityIndicator size='large' />

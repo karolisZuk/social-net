@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text } from 'react-native';
 import Firebase from '../Firebase';
-import { Input } from '../components/Input';
+import Input from '../components/Input';
 import { ButtonPrimary, ButtonSecondary } from '../components/Buttons';
 
 export default class Authenticate extends React.Component {

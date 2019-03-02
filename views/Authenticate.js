@@ -1,8 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, Text } from 'react-native';
+import {StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import Firebase from '../Firebase';
 import Input from '../components/Input';
 import { ButtonPrimary, ButtonSecondary } from '../components/Buttons';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 export default class Authenticate extends React.Component {
     state = {
@@ -17,37 +18,61 @@ export default class Authenticate extends React.Component {
         if (!Firebase.fb) {
             Firebase.init();
         }
+        Firebase.auth.onAuthStateChanged((user) => {
+            if (user){
+                Firebase.user = user;
+                this.props.navigation.navigate('Home');
+            }
+        })
     }
 
   onPressSignIn() {
-    console.log(this.state);
+    this.setState({isLoading: true});
+    const {email, password} = this.state;
+    Firebase.auth.signInWithEmailAndPassword(email, password)
+        .then(response => {
+            this.setState({error: '', isLoading: false});
+            Firebase.user = response;
+            this.props.navigation.navigate('Home');
+            }
+        ).catch(err => {
+            this.setState({error: err + ''});
+            showMessage({
+                message: this.state.error,
+                type: 'danger'
+            });
+            this.setState({isLoading: false});
+            }
+        )
   }
 
   onPressRegister() {
-      //pradedame rodyti, kad puslapis kraunasi
     this.setState({isLoading: true});
     const {email, password} = this.state;
     Firebase.auth.createUserWithEmailAndPassword(email, password)
         .then(response => {
-            // Isvalome klaidas ir nustojame rodyti puslapio krovimasi
             this.setState({error: '', isLoading: false});
-            // Teisingai prisiregistravus response gauname user objekta
             Firebase.user = response;
-            // Siuos props gauname is AppNavigator, kurio viduje yra sis komponentas
             this.props.navigation.navigate('Home');
         }).catch(err => {
-            // err paverciame i stringa pridedami prie jo tuscia stringa.
-            this.setState({error: err+ ''});
-                console.log(this.state.error);
-            //TODO cia reiktu rodyti zinute su error message
-
+            this.setState({error: err + ''});
+            showMessage({
+                message: this.state.error,
+                type: 'danger'
+            });
             this.setState({isLoading: false});
         })
   }
 
-    render() {
-        return (
-            <View style={styles.container}>
+    renderCurrentState() {
+        if (this.state.isLoading){
+            return (
+                <View style={styles.form}>
+                    <ActivityIndicator size='large' />
+                </View>
+            );
+        } else {
+            return (
                 <View style={styles.form}>
                     <Text>Welcome</Text>
                     <Input 
@@ -66,6 +91,15 @@ export default class Authenticate extends React.Component {
                     <ButtonPrimary onPress={() => this.onPressSignIn()}>Log in</ButtonPrimary>
                     <ButtonSecondary onPress={() => this.onPressRegister()}>Register</ButtonSecondary>
                 </View>
+                );
+        }
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                {this.renderCurrentState()}
+                <FlashMessage position='top'/>
             </View>
             );
         }

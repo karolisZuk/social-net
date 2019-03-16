@@ -1,5 +1,5 @@
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
-import Home from '../views/Home';
+import Home from './AuthenticatedNavigator';
 import Authenticate from '../views/Authenticate';
 
 //sis komponentas pagal musu paduotus parametrus pasirenka koki komponenta rodyti. Tai yra tarsi ejimas is vieno puslapio i kita

@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         marginTop: 1,
         padding: 20,
         width: '100%',
-        backgroundColor: '#00aeef',
+        backgroundColor: '#203c4a',
         borderRadius: 4,
         alignItems: 'center'
     },
@@ -36,13 +36,13 @@ const styles = StyleSheet.create({
         padding: 20,
         width: '100%',
         backgroundColor: 'rgba(0,0,0,0)',
-        borderColor: '#00aeef',
+        borderColor: '#203c4a',
         borderRadius: 4,
         borderWidth: 3,
         alignItems: 'center'
     },
     btnSecondaryText:{
-        color: '#00aeef',
+        color: '#203c4a',
         fontWeight: '700',
         fontSize: 18,
     }

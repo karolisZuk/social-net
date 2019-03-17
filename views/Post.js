@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, StyleSheet, TextInput, Text } from 'react-native'
 import { ButtonPrimary } from '../components/Buttons';
 import Firebase from '../Firebase';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 export default class Post extends Component {
     constructor() {
@@ -9,7 +10,8 @@ export default class Post extends Component {
         this.db = Firebase.db;
         this.state = {
             post: '',
-            isLoading: false
+            isLoading: false,
+            error: ''
         }
     }
 
@@ -26,7 +28,11 @@ export default class Post extends Component {
             this.setState({post: '', isLoading: false});
             this.props.navigation.navigate('Home');
         }).catch(err => {
-            console.log(err);
+            this.setState({error: err + ''});
+            showMessage({
+                message: this.state.error,
+                type: 'danger'
+            });
         })
 
     }
@@ -50,6 +56,7 @@ export default class Post extends Component {
                 <View style={styles.btnWrapper}>
                     <ButtonPrimary onPress={() => this.onPressPost()}>Post</ButtonPrimary>
                 </View>
+                <FlashMessage position='top'/>
             </View>
         )
     }
@@ -61,18 +68,20 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        padding: 50,
+        padding: 30,
         alignItems: 'center',
         justifyContent: 'center',
     },
     textAreaContainer: {
+        borderRadius: 10,
         width: '100%',
         borderColor: 'lightgrey',
         borderWidth: 1,
       },
     textArea: {
         height: 150,
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
+        margin: 5
     },
     btnWrapper: {
         padding: 10,

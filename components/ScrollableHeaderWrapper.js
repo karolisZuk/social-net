@@ -8,60 +8,51 @@ import {
   View,
 } from 'react-native';
 
-const HEADER_MAX_HEIGHT = 120; //300
-const HEADER_MIN_HEIGHT = Platform.OS === 'ios' ? 90 : 103;
+/*
+    TODO add icon dropping from top.
+*/
+
+const HEADER_MAX_HEIGHT = 300;
+const HEADER_MIN_HEIGHT = 90;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default class ScrollableHeaderWrapper extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-            scrollY: new Animated.Value(
-                Platform.OS === 'ios' ? -HEADER_MAX_HEIGHT : 0,
-            ),
-        };
+    this.state = {scrollY: new Animated.Value(0),};
     }
 
     render() {
-
-    // Because of content inset the scroll value will be negative on iOS so bring
-    // it back to 0.
-    const scrollY = Animated.add(
-        this.state.scrollY,
-        Platform.OS === 'ios' ? HEADER_MAX_HEIGHT : 0,
-      );
-
-        const headerTranslate = scrollY.interpolate({
+        const headerTranslate = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE],
             outputRange: [0, -HEADER_SCROLL_DISTANCE],
             extrapolate: 'clamp',
         });
 
-        const imageOpacity = scrollY.interpolate({
+        const imageOpacity = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
             outputRange: [1, 1, 0],
             extrapolate: 'clamp',
         });
-        const imageTranslate = scrollY.interpolate({
+        const imageTranslate = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE],
             outputRange: [0, 100],
             extrapolate: 'clamp',
         });
 
-        const titleScale = scrollY.interpolate({
+        const titleScale = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
             outputRange: [1, 1, 0.7],
             extrapolate: 'clamp',
         });
-        const titleTranslateY = scrollY.interpolate({
+        const titleTranslateY = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
             outputRange: [0, 0, -8],
             extrapolate: 'clamp',
         });
-        const titleTranslateX = scrollY.interpolate({
+        const titleTranslateX = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-            outputRange: [0, 0, -HEADER_SCROLL_DISTANCE / 2 ],
+            outputRange: [0, 0, -180 ],
             extrapolate: 'clamp'
         });
     
@@ -81,35 +72,30 @@ export default class ScrollableHeaderWrapper extends Component {
             </View>
         </Animated.ScrollView>
         <Animated.View
-            style={[
-                styles.header,
-                { transform: [{ translateY: headerTranslate }] },
+            style={[styles.header,{
+                transform: [{ translateY: headerTranslate }] },
           ]}
         >
         <Animated.Image
-            style={[
-                styles.backgroundImage,
-                {
-                    opacity: imageOpacity,
-                    transform: [{ translateY: imageTranslate }],
+            style={[styles.backgroundImage, {
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }],
                 },
             ]}
             source={require('../images/home-gradient.png')}
           />
         </Animated.View>
         <Animated.View
-            style={[
-                styles.bar,
-                {
+            style={[styles.bar,{
                 transform: [
                     { scale: titleScale },
                     { translateY: titleTranslateY },
                     { translateX: titleTranslateX }
-                ],
+                    ],
                 },
           ]}
         >
-            <Text style={styles.headerTitle}>{this.props.title}</Text>
+        <Text style={styles.headerTitle}>{this.props.title}</Text>
         </Animated.View>
       </View>
     );
@@ -153,7 +139,7 @@ const styles = StyleSheet.create({
         right: 0,
     },
     headerTitle: {
-        fontSize: 33,
+        fontSize: 37,
         fontWeight: '700',
         color: 'white'
     },
@@ -163,5 +149,5 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         marginTop: HEADER_MAX_HEIGHT,
-    },
+    }
 });

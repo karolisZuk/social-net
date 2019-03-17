@@ -19,8 +19,11 @@ const ButtonSecondary = ({onPress, children}) => {
 
 const styles = StyleSheet.create({
     btnPrimary: {
-        marginTop: 1,
-        padding: 20,
+        margin: 10,
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingLeft: 35,
+        paddingRight: 35,
         width: '100%',
         backgroundColor: '#203c4a',
         borderRadius: 4,
@@ -32,8 +35,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     btnSecondary: {
-        marginTop: 1,
-        padding: 20,
+        margin: 10,
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingLeft: 35,
+        paddingRight: 35,
         width: '100%',
         backgroundColor: 'rgba(0,0,0,0)',
         borderColor: '#203c4a',

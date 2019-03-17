@@ -6,6 +6,14 @@ import { ButtonSecondary } from '../components/Buttons';
 
 export default class Settings extends Component {
 
+    logout(){
+        Firebase.auth.signOut().then(() => {
+                this.props.navigation.navigate('Authenticate');
+            }).catch(err => {
+                console.log(err);
+            });
+    }
+
     render() {
         return (
             <ScrollableHeaderWrapper title='Settings'>
@@ -18,16 +26,10 @@ export default class Settings extends Component {
 }
 
 const styles = StyleSheet.create({
-    btnWrapper: {
-        padding: 40,
-        position: 'absolute',
-        bottom: 0,
-        left: '50%'
-      },
     container: {
-        flex: 1,
-        alignItems: 'center',
+        display: 'flex',
         justifyContent: 'center',
-        flexDirection: 'row'
+        alignSelf: 'center',
+        width: '50%'
     }
 });

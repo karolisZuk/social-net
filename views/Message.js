@@ -18,7 +18,7 @@ export default class Settings extends Component {
     
     render() {
         return (
-        <ScrollableHeaderWrapper title='Messages'>
+        <ScrollableHeaderWrapper title='Chat'>
             {this._renderScrollViewContent()}
         </ScrollableHeaderWrapper>
         )

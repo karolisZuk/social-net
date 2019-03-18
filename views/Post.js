@@ -23,7 +23,9 @@ export default class Post extends Component {
         this.db.collection('posts').add({
             post: this.state.post,
             userId: Firebase.user.uid,
-            userEmail: Firebase.user.email
+            userEmail: Firebase.user.email,
+            postDate: new Date().toISOString(),
+            claps: 0
         }).then(() => {
             this.setState({post: '', isLoading: false});
             this.props.navigation.navigate('Home');

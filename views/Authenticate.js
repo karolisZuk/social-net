@@ -6,63 +6,81 @@ import { ButtonPrimary, ButtonSecondary } from '../components/Buttons';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 export default class Authenticate extends React.Component {
-    state = {
-        email: '',
-        password: '',
-        error: '',
-        isLoading: false
+    constructor(props) {
+        super(props);
+    
+        this._isMounted = false;
+        state = {
+            email: '',
+            password: '',
+            error: '',
+            isLoading: false
+        }
+    }
+
+    componentDidMount(){
+        this._isMounted = true;
+    }
+
+    componentWillUnmount(){
+        this._isMounted = false;
     }
 
     componentWillMount() {
-        // tikrinam ar inicializavom firebase. jei ne - inicializuojam
+        this.setState({isLoading: true});
         if (!Firebase.fb) {
             Firebase.init();
         }
-        Firebase.auth.onAuthStateChanged((user) => {
-            if (user){
+        Firebase.auth.onAuthStateChanged(user => {
+            if (user) {
                 Firebase.user = user;
+                this._isMounted && this.setState({isLoading: false});
                 this.props.navigation.navigate('Home');
+            } else {
+                this._isMounted && this.setState({isLoading: false});
             }
         })
     }
 
-  onPressSignIn() {
-    this.setState({isLoading: true});
-    const {email, password} = this.state;
-    Firebase.auth.signInWithEmailAndPassword(email, password)
-        .then(response => {
-            this.setState({error: '', isLoading: false});
-            Firebase.user = response;
-            this.props.navigation.navigate('Home');
+    onPressSignIn() {
+        if (this._isMounted) {
+            this.setState({isLoading: true});
+            const {email, password} = this.state;
+            Firebase.auth.signInWithEmailAndPassword(email, password)
+                .then(response => {
+                    Firebase.user = response;
+                    this.setState({error: '', isLoading: false});
+                    this.props.navigation.navigate('Home');
+                    }
+                ).catch(err => {
+                    this.setState({error: err + '', isLoading: false});
+                    showMessage({
+                        message: this.state.error,
+                        type: 'danger'
+                    });
+                    }
+                )
             }
-        ).catch(err => {
-            this.setState({error: err + ''});
-            showMessage({
-                message: this.state.error,
-                type: 'danger'
-            });
-            this.setState({isLoading: false});
-            }
-        )
-  }
+    }
 
-  onPressRegister() {
-    this.setState({isLoading: true});
-    const {email, password} = this.state;
-    Firebase.auth.createUserWithEmailAndPassword(email, password)
-        .then(response => {
-            this.setState({error: '', isLoading: false});
-            Firebase.user = response;
-            this.props.navigation.navigate('Home');
-        }).catch(err => {
-            this.setState({error: err + ''});
-            showMessage({
-                message: this.state.error,
-                type: 'danger'
-            });
-            this.setState({isLoading: false});
-        })
-  }
+    onPressRegister() {
+        if (this._isMounted) {
+            this.setState({isLoading: true});
+            const {email, password} = this.state;
+            Firebase.auth.createUserWithEmailAndPassword(email, password)
+                .then(response => {
+                    this.setState({error: '', isLoading: false});
+                    Firebase.user = response;
+                    this.props.navigation.navigate('Home');
+                }).catch(err => {
+                    this.setState({error: err + ''});
+                    showMessage({
+                        message: this.state.error,
+                        type: 'danger'
+                    });
+                })
+        }
+    }
 
     renderCurrentState() {
         if (this.state.isLoading){
@@ -88,6 +106,7 @@ export default class Authenticate extends React.Component {
                         onChangeText={password => this.setState({ password })}
                         value = {this.state.password}
                     />
+                    <Text style={styles.explanatoryText}>Do not reuse your bank password, we are bad at security.</Text>
                     <ButtonPrimary onPress={() => this.onPressSignIn()}>Log in</ButtonPrimary>
                     <ButtonSecondary onPress={() => this.onPressRegister()}>Register</ButtonSecondary>
                 </View>
@@ -106,6 +125,11 @@ export default class Authenticate extends React.Component {
     }
 
 const styles = StyleSheet.create({
+    explanatoryText: {
+        marginTop: 5,
+        marginBottom: 5,
+        textAlign: 'center'
+    },
     container: {
         flex: 1,
         padding: 50,

@@ -10,6 +10,9 @@ const PostComponent = (props) => {
     return (
         <Card>
             <CardSection>
+                <Text>{ data.postDate }</Text>
+            </CardSection>
+            <CardSection>
                 <View style={headerContent}>
                     <Text style={headerText}>{ data.post }</Text>
                 </View>
@@ -23,10 +26,11 @@ const PostComponent = (props) => {
 
 const styles = StyleSheet.create({
     headerContent: {
-        height: 60
+        minHeight: 60
     },
     headerText: {
-        fontSize: 18
+        fontSize: 20,
+        margin: 5
     },
     thumbnail: {
         height: 50,

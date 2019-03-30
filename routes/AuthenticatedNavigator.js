@@ -60,7 +60,7 @@ export default AuthenticatedNavigator = createMaterialTopTabNavigator({
             headerVisible: false,
         },
         navigationOptions: {
-            tabBarLabel: 'Message',
+            tabBarLabel: 'Chat',
             tabBarIcon: ({tintColor}) => (
                 <Icon name="ios-mail" color={tintColor} size={20} />
             )

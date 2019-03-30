@@ -7,42 +7,53 @@ import PostComponent from '../components/PostComponent';
 import ClapButton from '../components/ClapButton';
 
 export default class Home extends Component {
-  constructor() {
-    super();
-    this.db = Firebase.db;
-    this.state = {
-        posts: []
-    }
+    constructor() {
+        super();
+        this.db = Firebase.db;
+        this.state = {
+            posts: [],
+            error: '',
+            isLoading: false
+        }
 }
 
-  fetchAllPosts() {
-    let postsResult = [];
-    this.db.collection('posts').get()
-      .then(response => {
-        response.forEach(doc => {
-          postsResult.push({id: doc.id, data: doc.data()})
+    fetchAllPosts() {
+        this.setState({isLoading: true});
+        let postsResult = [];
+        this.db.collection('posts').get()
+        .then(response => {
+            response.forEach(doc => {
+            postsResult.push({id: doc.id, data: doc.data()})
+            })
+            this.setState({posts: postsResult, isLoading: false});
+        }).catch(err => {
+            this.setState({error: err + '', isLoading: false});
+            showMessage({
+                message: this.state.error,
+                type: 'danger'
+            });
         })
-        this.setState({posts: postsResult});
-      })
-  }
+    }
 
-  render() {
-    const posts = this.state.posts.map(post => {
-      return (
-        <View key={post.id}>
-          <PostComponent post={post} />
-          <ClapButton />
-        </View>
-      )
-    });
+    updatePostClaps(postId, claps) {
+        console.log(postId, claps);
+    }
 
-    return (
-      <ScrollableHeaderWrapper title='News'>
-        <NavigationEvents
-        onWillFocus={() => this.fetchAllPosts()}
-      />
-        {posts}
-    </ScrollableHeaderWrapper>
-    )
-  }
+    render() {
+        const posts = this.state.posts.map(post => {
+        return (
+            <View key={post.id}>
+                <PostComponent post={post} />
+                <ClapButton updatePostClaps={(postId, claps) => this.updatePostClaps(postId, claps)} post={post} />
+                <Text>-Claps count-</Text>
+            </View>
+        )});
+
+        return (
+            <ScrollableHeaderWrapper title='News'>
+                <NavigationEvents onWillFocus={()=> this.fetchAllPosts()} />
+                {posts}
+            </ScrollableHeaderWrapper>
+        )
+    }
 }

@@ -32,13 +32,64 @@ export default class ClapButton extends Component {
                         style={styles.clapBtn}>
                         <Icon name={clapIcon} color={'#203c4a'} size={25} />
                     </TouchableOpacity>
+                    <ClapBubble />
                 </View>
             </View>
         )
     }
 }
 
+class ClapBubble extends Component {
+    constructor(){
+        super();
+        this.state = {
+            yPosition: new Animated.Value(0),
+            opacity: new Animated.Value(0)
+        }
+    }
+
+    componentDidMount(){
+        Animated.parallel([
+            Animated.timing(this.state.yPosition, {
+                toValue: -100,
+                duration: 500,
+                easing: Easing.linear
+            }),
+            Animated.timing(this.state.opacity, {
+                toValue: 1,
+                duration: 500,
+                easing: Easing.linear
+            })
+        ]).start()
+    }
+
+    render () {
+        let animationStyle = {
+            transform: [{translateY: this.state.yPosition}],
+            opacity: this.state.opacity
+        }
+        return (
+            <View style={[styles.clapBubble, animationStyle]}>
+                <Text style={styles.clapText}>1</Text>
+            </View>
+        );
+    }
+}
+
 const styles = StyleSheet.create({
+    clapBubble: {
+        height: 45,
+        width: 45,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 23,
+        position: 'absolute',
+        backgroundColor: '#203c4a'
+    },
+    clapText: {
+        color: '#ffc928',
+        fontSize: 12
+    },
     container: {
         position: 'absolute',
         right: 15,

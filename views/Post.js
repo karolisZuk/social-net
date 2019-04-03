@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, TextInput, Text } from 'react-native'
-import { ButtonPrimary } from '../components/Buttons';
+import { ButtonPrimary, ButtonSecondary } from '../components/Buttons';
 import Firebase from '../Firebase';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Post extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.db = Firebase.db;
         this.state = {
             post: '',
@@ -36,7 +37,10 @@ export default class Post extends Component {
                 type: 'danger'
             });
         })
+    }
 
+    onPressOpenCamera(){
+        this.props.navigation.push('CameraView');
     }
 
     render() {
@@ -56,8 +60,14 @@ export default class Post extends Component {
                     />
                 </View>
                 <View style={styles.btnWrapper}>
-                    <ButtonPrimary onPress={() => this.onPressPost()}>Post</ButtonPrimary>
+                    <View style={styles.btnContainer}>
+                        <ButtonPrimary onPress={() => this.onPressPost()}>Post</ButtonPrimary>
+                    </View>
+                    <View style={styles.btnContainer}>
+                        <ButtonSecondary onPress={() => this.onPressOpenCamera()}><Icon name={'ios-camera'} color={'#203c4a'} size={20} /> Photo</ButtonSecondary>
+                    </View>
                 </View>
+
                 <FlashMessage position='top'/>
             </View>
         )
@@ -66,6 +76,7 @@ export default class Post extends Component {
 
 const styles = StyleSheet.create({
     title: {
+        flex: 1,
         fontSize: 35
     },
     container: {
@@ -86,8 +97,13 @@ const styles = StyleSheet.create({
         margin: 5
     },
     btnWrapper: {
-        padding: 10,
-        display: 'flex',
-        justifyContent: 'center'
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    btnContainer: {
+        flex: 1,
+        margin: 5
     }
 });

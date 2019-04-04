@@ -7,6 +7,7 @@ import PostComponent from '../components/PostComponent';
 import ClapButton from '../components/ClapButton';
 import ClapCounter from '../components/ClapCounter';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
+import ClapCounter from '../components/ClapCounter';
 
 export default class Home extends Component {
     constructor() {

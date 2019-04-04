@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, ActivityIndicator  } from 'react-native'
 import Firebase from '../Firebase';
 import ScrollableHeaderWrapper from '../components/ScrollableHeaderWrapper';
 import { NavigationEvents } from 'react-navigation';
@@ -20,7 +20,7 @@ export default class Home extends Component {
 }
 
     fetchAllPosts() {
-        this.setState({isLoading: true});
+        this.setState({isLoading: true, posts: []});
         this.db.collection('posts').get()
         .then(response => {
             response.forEach(doc => {
@@ -58,6 +58,25 @@ export default class Home extends Component {
         this.setState({posts: res});
     }
 
+    renderHome(){
+        if (this.state.isLoading){
+            return (
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: '50%'}}>
+                    <ActivityIndicator size='large' />
+                </View>
+            )
+        } else {
+            return this.state.posts.map(post => {
+                return (
+                    <View key={post.id}>
+                        <PostComponent post={post} />
+                        <ClapButton updatePostClaps={(postId, claps) => this.updatePostClaps(postId, claps)} post={post} />
+                        <Text>-Claps count-</Text>
+                    </View>
+            )});
+        }
+    }
+
     render() {
         const posts = this.state.posts.map(post => {
         return (
@@ -71,7 +90,7 @@ export default class Home extends Component {
         return (
             <ScrollableHeaderWrapper title='News'>
                 <NavigationEvents onWillFocus={()=> this.fetchAllPosts()} />
-                {posts}
+                {this.renderHome()}
                 <FlashMessage position='top'/>
             </ScrollableHeaderWrapper>
         )

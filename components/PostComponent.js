@@ -7,14 +7,14 @@ const PostComponent = (props) => {
     const { data } = props.post;
     const { headerContent, headerText } = styles;
     return (
-        <Card key={data.id}>
+        <Card>
             <CardSection>
                 <Text>{ data.postDate }</Text>
             </CardSection>
             <CardSection>
-                <Image 
+                <Image key={data.id}
                     style={styles.imageStyle}
-                    source={{uri: data.imageUrl || 'https://via.placeholder.com/150'}}
+                    source={{uri: data.imageUrl || 'https://via.placeholder.com/600x600.png?text=User+has+not+uploaded+any+photo'}}
                 />
             </CardSection>
             <CardSection>
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     },
     //interesting! sets image to full width
     imageStyle: {
+        borderRadius: 10,
         height: 300,
         flex: 1,
         width: null

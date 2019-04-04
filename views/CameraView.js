@@ -23,14 +23,14 @@ export default class CameraView extends React.Component {
     }
 
     goBack(){
-        this.props.navigation.goBack();
+        this.props.navigation.navigate('Post');
     }
 
-    snap = async () => {
-        if (this.camera) {
-          let photo = await this.camera.takePictureAsync();
-          console.log(photo);
-        }
+    snap(){
+        this.camera.takePictureAsync({ skipProcessing: true, quality: 0}).then(pic => {
+            console.log(pic);
+            this.props.navigation.navigate('Post', {imageRef: pic});
+        });
     };
 
     renderBottomBar() {
@@ -39,7 +39,7 @@ export default class CameraView extends React.Component {
                 <TouchableOpacity onPress={() => this.goBack()} style={styles.secondaryButtons}>
                     <Icon style={styles.btnIcon} name="ios-arrow-back" size={35} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={this.snap}>
+                <TouchableOpacity onPress={() => this.snap()}>
                     <Icon name="ios-radio-button-on" size={70} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.secondaryButtons} onPress={() => this.flipCamera()}>

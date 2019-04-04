@@ -13,6 +13,7 @@ export default class Firebase {
         if (!firebase.apps.length){
             Firebase.fb = firebase.initializeApp(fbConfig);
             Firebase.auth = firebase.auth();
+            Firebase.storage = firebase.storage();
             Firebase.db = firebase.firestore();
         }
     }

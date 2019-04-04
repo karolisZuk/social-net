@@ -1,16 +1,21 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Image } from 'react-native';
 import Card from './Card';
 import CardSection from './CardSection';
 
 const PostComponent = (props) => {
     const { data } = props.post;
     const { headerContent, headerText } = styles;
-
     return (
-        <Card>
+        <Card key={data.id}>
             <CardSection>
                 <Text>{ data.postDate }</Text>
+            </CardSection>
+            <CardSection>
+                <Image 
+                    style={styles.imageStyle}
+                    source={{uri: data.imageUrl || 'https://via.placeholder.com/150'}}
+                />
             </CardSection>
             <CardSection>
                 <View style={headerContent}>

@@ -5,6 +5,7 @@ import ScrollableHeaderWrapper from '../components/ScrollableHeaderWrapper';
 import { NavigationEvents } from 'react-navigation';
 import PostComponent from '../components/PostComponent';
 import ClapButton from '../components/ClapButton';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 export default class Home extends Component {
     constructor() {
@@ -19,13 +20,23 @@ export default class Home extends Component {
 
     fetchAllPosts() {
         this.setState({isLoading: true});
-        let postsResult = [];
         this.db.collection('posts').get()
         .then(response => {
             response.forEach(doc => {
-            postsResult.push({id: doc.id, data: doc.data()})
-            })
-            this.setState({posts: postsResult, isLoading: false});
+                let postRes = {};
+                let imageRef = {};
+                if(doc.data().withImage) {
+                    imageRef = Firebase.storage.ref(`posts/${doc.id}`);
+                    imageRef.getDownloadURL().then(url => {
+                        postRes = {id: doc.id,data: {...doc.data(), imageUrl: url}};
+                        this.setState({posts: [...this.state.posts, postRes]});
+                    })
+                } else {
+                    postRes = {id: doc.id, data: {...doc.data(), imageUrl: ''}};
+                    this.setState({posts: [...this.state.posts, postRes]});
+                }
+            });
+            this.setState({isLoading: false});
         }).catch(err => {
             this.setState({error: err + '', isLoading: false});
             showMessage({
@@ -53,6 +64,7 @@ export default class Home extends Component {
             <ScrollableHeaderWrapper title='News'>
                 <NavigationEvents onWillFocus={()=> this.fetchAllPosts()} />
                 {posts}
+                <FlashMessage position='top'/>
             </ScrollableHeaderWrapper>
         )
     }

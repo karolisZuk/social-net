@@ -27,7 +27,7 @@ export default class ClapButton extends Component {
         count++;
         claps.push(count);
         this.setState({count});
-        this.props.updatePostClaps(this.props.post.data, this.state.count); //TODO id, clap count
+        this.props.updatePostClaps(this.props.post.id, this.state.count); //TODO id, clap count
     }
 
     keepClapping() {

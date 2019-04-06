@@ -52,7 +52,8 @@ export default class Home extends Component {
         let res = this.state.posts.map(post => {
             if (postId === post.id){
                 post.data.claps = claps;
-                //update backend here with throtling and debounce, then set state
+                //Throttle and debounce this
+                this.sendUpdatedClapsToFirebase(postId, post.data.claps);
             }
             return post;
         });
@@ -60,7 +61,7 @@ export default class Home extends Component {
     }
 
     renderHome(){
-        if (this.state.isLoading){
+        if (this.state.isLoading) {
             return (
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: '50%'}}>
                     <ActivityIndicator size='large' />
@@ -76,6 +77,18 @@ export default class Home extends Component {
                     </View>
             )});
         }
+    }
+
+    sendUpdatedClapsToFirebase(postId, claps) {
+        let postRef = this.db.collection(`posts`).doc(postId);
+        postRef.get().then(postData => {
+            if (postData.exists){
+                postRef.update({
+                    lastUpdate: new Date().toISOString(),
+                    claps
+                });
+            }
+        })
     }
 
     render() {

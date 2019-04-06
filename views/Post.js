@@ -34,6 +34,7 @@ export default class Post extends Component {
             userEmail: Firebase.user.email,
             postDate: new Date().toISOString(),
             withImage: this.state.image ? true : false, 
+            lastUpdate: new Date().toISOString(),
             claps: 0
         }).then(postRef => {
             if (this.state.image){

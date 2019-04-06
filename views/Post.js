@@ -13,7 +13,8 @@ export default class Post extends Component {
         this.state = {
             post: '',
             isLoading: false,
-            error: ''
+            error: '',
+            image: this.props.image
         }
     }
 
@@ -23,6 +24,7 @@ export default class Post extends Component {
     }
 
     onPressPost() {
+        console.log(this.state.image)
         if (!this.state.post && !this.state.image) {
             return;
         }
@@ -36,6 +38,7 @@ export default class Post extends Component {
             claps: 0
         }).then(postRef => {
             if (this.state.image){
+                console.log(this.state.image)
                 this.uploadImage(this.state.image, postRef.id);
             } else {
             this.setState({post: '', isLoading: false});

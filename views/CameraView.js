@@ -26,10 +26,14 @@ export default class CameraView extends React.Component {
         this.props.navigation.navigate('Post');
     }
 
-    snap(){
-        this.camera.takePictureAsync({ skipProcessing: true, quality: 0}).then(pic => {
-            this.props.navigation.navigate('Post', {imageRef: pic});
-        });
+    async snap(){
+        setTimeout(()=>{
+            this.setState({takingPicture: true});
+        },1)
+        let pic = await this.camera.takePictureAsync({ skipProcessing: true, quality: 0});
+        await this.setState({takingPicture: false});
+        await this.props.navigation.navigate('Post', {imageRef: pic});
+
     };
 
     renderBottomBar() {

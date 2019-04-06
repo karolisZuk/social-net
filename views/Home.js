@@ -8,6 +8,7 @@ import ClapButton from '../components/ClapButton';
 import ClapCounter from '../components/ClapCounter';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import ClapCounter from '../components/ClapCounter';
+import Debounce from '../utils/Debounce'
 
 export default class Home extends Component {
     constructor() {
@@ -51,9 +52,8 @@ export default class Home extends Component {
     updatePostClaps(postId, claps) {
         let res = this.state.posts.map(post => {
             if (postId === post.id){
-                post.data.claps = claps;
-                //Throttle and debounce this
-                this.sendUpdatedClapsToFirebase(postId, post.data.claps);
+                post.data.claps += claps;
+                Debounce(this.sendUpdatedClapsToFirebase(postId, post.data.claps), 1000);
             }
             return post;
         });

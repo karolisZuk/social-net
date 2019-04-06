@@ -39,6 +39,7 @@ export default class Home extends Component {
                     this.setState({posts: [...this.state.posts, postRes]});
                 }
             });
+            this.sortOnClapsAndUpdateState(this.state.posts);
             this.setState({isLoading: false});
         }).catch(err => {
             this.setState({error: err + '', isLoading: false});
@@ -79,14 +80,17 @@ export default class Home extends Component {
         }
     }
 
-    sendUpdatedClapsToFirebase(postId, claps) {
+    sortOnClapsAndUpdateState (posts = this.state.posts) {
+        let sorted = posts.sort((post1, post2) => post2.data.claps - post1.data.claps);
+        this.setState({posts: sorted});
+    }
+
+    sendUpdatedClapsToFirebase (postId, claps) {
         let postRef = this.db.collection(`posts`).doc(postId);
         postRef.get().then(postData => {
             if (postData.exists){
-                postRef.update({
-                    lastUpdate: new Date().toISOString(),
-                    claps
-                });
+                postRef.update({lastUpdate: new Date().toISOString(), claps});
+                this.sortOnClapsAndUpdateState();
             }
         })
     }

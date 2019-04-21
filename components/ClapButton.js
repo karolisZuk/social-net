@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Animated, Easing } from 'react-native';
 import { Audio } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Debounce from '../utils/Debounce';
 
 export default class ClapButton extends Component {
 
@@ -27,7 +28,7 @@ export default class ClapButton extends Component {
         count++;
         claps.push(count);
         this.setState({count});
-        this.props.updatePostClaps(this.props.post.id, this.state.count); //TODO id, clap count
+        this.props.updatePostClaps(this.props.post.id, this.state.count);
     }
 
     keepClapping() {

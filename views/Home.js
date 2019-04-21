@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, ActivityIndicator  } from 'react-native'
+import { View, ActivityIndicator, Text } from 'react-native'
 import Firebase from '../Firebase';
 import ScrollableHeaderWrapper from '../components/ScrollableHeaderWrapper';
 import { NavigationEvents } from 'react-navigation';
 import PostComponent from '../components/PostComponent';
 import ClapButton from '../components/ClapButton';
-import FlashMessage, { showMessage } from 'react-native-flash-message';
 import ClapCounter from '../components/ClapCounter';
+import HeaderToggles from '../components/HeaderToggles';
+import Debounce from '../utils/Debounce';
 
 export default class Home extends Component {
     constructor() {
@@ -19,43 +20,54 @@ export default class Home extends Component {
         }
 }
 
-    fetchAllPosts() {
+    async fetchAllPosts() {
         this.setState({isLoading: true, posts: []});
-        this.db.collection('posts').get()
-        .then(response => {
-            response.forEach(doc => {
-                let postRes = {};
-                let imageRef = {};
-                if(doc.data().withImage) {
-                    imageRef = Firebase.storage.ref(`posts/${doc.id}`);
-                    imageRef.getDownloadURL().then(url => {
-                        postRes = {id: doc.id,data: {...doc.data(), imageUrl: url}};
-                        this.setState({posts: [...this.state.posts, postRes]});
-                    })
-                } else {
-                    postRes = {id: doc.id, data: {...doc.data(), imageUrl: ''}};
+        let posts = await this.db.collection('posts').get()
+        posts.forEach(doc => {
+            let postRes = {};
+            if(doc.data().withImage) {
+                Firebase.storage.ref(`posts/${doc.id}`).getDownloadURL().then(url => {
+                    postRes = {id: doc.id,data: {...doc.data(), imageUrl: url}};
                     this.setState({posts: [...this.state.posts, postRes]});
-                }
-            });
+                    this.state.isFilteringByClaps ? this.sortOnClapsAndUpdateState() : this.sortOnDateAndUpdateState();
+                })
+            } else {
+                postRes = {id: doc.id, data: {...doc.data(), imageUrl: ''}};
+                this.setState({posts: [...this.state.posts, postRes]});
+                this.state.isFilteringByClaps ? this.sortOnClapsAndUpdateState() : this.sortOnDateAndUpdateState();            }
+        });
             this.setState({isLoading: false});
-        }).catch(err => {
-            this.setState({error: err + '', isLoading: false});
-            showMessage({
-                message: this.state.error,
-                type: 'danger'
-            });
-        })
     }
 
     updatePostClaps(postId, claps) {
         let res = this.state.posts.map(post => {
             if (postId === post.id){
-                post.data.claps = claps;
-                //update backend here with throtling and debounce, then set state
+                post.data.claps += claps;
+                Debounce(this.sendUpdatedClapsToFirebase(postId, post.data.claps), 1000);
             }
             return post;
         });
         this.setState({posts: res});
+    }
+
+    sendUpdatedClapsToFirebase (postId, claps) {
+        let postRef = this.db.collection(`posts`).doc(postId);
+        postRef.get().then(postData => {
+            if (postData.exists){
+                postRef.update({lastUpdate: new Date().toISOString(), claps});
+                this.state.isFilteringByClaps ? this.sortOnClapsAndUpdateState() : this.sortOnDateAndUpdateState();
+            }
+        })
+    }
+
+    sortOnClapsAndUpdateState (posts = this.state.posts) {
+        let sorted = posts.sort((a, b) => b.data.claps - a.data.claps);
+        this.setState({posts: sorted});
+    }
+
+    sortOnDateAndUpdateState (posts = this.state.posts) {
+        let sorted = posts.sort((a, b) => (a.data.postDate > b.data.postDate) ? -1 : ((a.data.postDate < b.data.postDate) ? 1 : 0));
+        this.setState({posts: sorted});
     }
 
     renderHome(){
@@ -77,12 +89,25 @@ export default class Home extends Component {
         }
     }
 
+    toggleFilter() {
+        if (!this.state.isFilteringByClaps) {
+            this.sortOnClapsAndUpdateState();
+        } else {
+            this.sortOnDateAndUpdateState();
+        }
+        this.setState({isFilteringByClaps: !this.state.isFilteringByClaps});
+    }
+
     render() {
         return (
-            <ScrollableHeaderWrapper title='News'>
-                <NavigationEvents onWillFocus={()=> this.fetchAllPosts()} />
+            <ScrollableHeaderWrapper title='News'
+                headerChildComponent={
+                    <HeaderToggles 
+                        onPress={() => this.toggleFilter()} 
+                        value={ this.state.isFilteringByClaps } />
+                } >
+                <NavigationEvents onWillFocus={() => this.fetchAllPosts()} />
                 {this.renderHome()}
-                <FlashMessage position='top'/>
             </ScrollableHeaderWrapper>
         )
     }

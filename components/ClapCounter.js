@@ -24,9 +24,9 @@ const styles = StyleSheet.create({
 
     },
     bubble: {
-        height: 45,
-        width: 45,
-        borderRadius: 23,
+        height: 60,
+        width: 60,
+        borderRadius: 30,
         backgroundColor: '#ecf0f1',
         elevation: 3,
         justifyContent: 'center',

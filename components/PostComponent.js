@@ -6,17 +6,17 @@ import CardSection from './CardSection';
 const PostComponent = (props) => {
     const { data } = props.post;
     const { headerContent, headerText } = styles;
+
     return (
         <Card>
             <CardSection>
-                <Text>{ data.postDate }</Text>
+                <Text>{ data.postDate } </Text>
             </CardSection>
-            <CardSection>
-                <Image key={data.id}
-                    style={styles.imageStyle}
-                    source={{uri: data.imageUrl || 'https://via.placeholder.com/600x600.png?text=User+has+not+uploaded+any+photo'}}
-                />
-            </CardSection>
+            { 
+                data.imageUrl 
+                ? (<CardSection><Image key={data.id} style={styles.imageStyle} source={{ uri: data.imageUrl }} /></CardSection>)
+                : (<View></View>)
+            }
             <CardSection>
                 <View style={headerContent}>
                     <Text style={headerText}>{ data.post }</Text>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     },
     //interesting! sets image to full width
     imageStyle: {
-        borderRadius: 10,
+        borderRadius: 5,
         height: 300,
         flex: 1,
         width: null

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Animated, Easing } from 'react-native';
+import { Audio } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class ClapButton extends Component {
@@ -12,13 +13,21 @@ export default class ClapButton extends Component {
         }
     }
 
-    clap() {
+    async clap() {
+        const soundObject = new Audio.Sound();
+        try {
+            await soundObject.loadAsync(require('../assets/sounds/blop.mp3'));
+            await soundObject.playAsync();
+            // Your sound is playing!
+          } catch (error) {
+            // An error occurred!
+        }
         let count = this.state.count;
         let claps = this.state.claps;
         count++;
         claps.push(count);
         this.setState({count});
-        this.props.updatePostClaps(this.props.post.data, 'test'); //TODO id, clap count
+        this.props.updatePostClaps(this.props.post.id, this.state.count); //TODO id, clap count
     }
 
     keepClapping() {

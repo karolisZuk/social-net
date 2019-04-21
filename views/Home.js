@@ -6,6 +6,7 @@ import { NavigationEvents } from 'react-navigation';
 import PostComponent from '../components/PostComponent';
 import ClapButton from '../components/ClapButton';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
+import ClapCounter from '../components/ClapCounter';
 
 export default class Home extends Component {
     constructor() {
@@ -47,7 +48,14 @@ export default class Home extends Component {
     }
 
     updatePostClaps(postId, claps) {
-        console.log(postId, claps);
+        let res = this.state.posts.map(post => {
+            if (postId === post.id){
+                post.data.claps = claps;
+                //update backend here with throtling and debounce, then set state
+            }
+            return post;
+        });
+        this.setState({posts: res});
     }
 
     renderHome(){
@@ -63,14 +71,13 @@ export default class Home extends Component {
                     <View key={post.id}>
                         <PostComponent post={post} />
                         <ClapButton updatePostClaps={(postId, claps) => this.updatePostClaps(postId, claps)} post={post} />
-                        <Text>-Claps count-</Text>
+                        <ClapCounter count={post.data.claps} />
                     </View>
-            )});
+                )});
         }
     }
 
     render() {
-
         return (
             <ScrollableHeaderWrapper title='News'>
                 <NavigationEvents onWillFocus={()=> this.fetchAllPosts()} />

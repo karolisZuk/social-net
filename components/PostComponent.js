@@ -1,16 +1,21 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Image } from 'react-native';
 import Card from './Card';
 import CardSection from './CardSection';
 
 const PostComponent = (props) => {
     const { data } = props.post;
     const { headerContent, headerText } = styles;
-
     return (
         <Card>
             <CardSection>
                 <Text>{ data.postDate }</Text>
+            </CardSection>
+            <CardSection>
+                <Image key={data.id}
+                    style={styles.imageStyle}
+                    source={{uri: data.imageUrl || 'https://via.placeholder.com/600x600.png?text=User+has+not+uploaded+any+photo'}}
+                />
             </CardSection>
             <CardSection>
                 <View style={headerContent}>
@@ -45,6 +50,7 @@ const styles = StyleSheet.create({
     },
     //interesting! sets image to full width
     imageStyle: {
+        borderRadius: 10,
         height: 300,
         flex: 1,
         width: null

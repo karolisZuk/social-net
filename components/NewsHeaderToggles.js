@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Switch } from 'react-native';
+import { StyleSheet, View, Switch } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const HeaderToggles = ({onPress, value}) => {
+const NewsHeaderToggles = ({onPress, value}) => {
     return (
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon style={{marginRight: 10}} name="ios-calendar" size={35} color={value ? 'white' : '#ffc928'} />
@@ -20,4 +20,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HeaderToggles;
+export default NewsHeaderToggles;

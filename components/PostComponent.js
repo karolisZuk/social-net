@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet, Image } from 'react-native';
-import Card from './Card';
-import CardSection from './CardSection';
+import Card from './Card/Card';
+import CardSection from './Card/CardSection';
 
 const PostComponent = (props) => {
     const { data } = props.post;

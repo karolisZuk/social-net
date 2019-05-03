@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Animated, Easing } from 'react-native';
 import { Audio } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Debounce from '../utils/Debounce';
 
 export default class ClapButton extends Component {
 
@@ -17,7 +16,7 @@ export default class ClapButton extends Component {
     async clap() {
         const soundObject = new Audio.Sound();
         try {
-            await soundObject.loadAsync(require('../assets/sounds/blop.mp3'));
+            await soundObject.loadAsync(require('../../assets/sounds/blop.mp3'));
             await soundObject.playAsync();
             // Your sound is playing!
           } catch (error) {
@@ -143,10 +142,3 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 });
-
-// create and style heart button
-// add it to HOME VIEW. Style the button to appropriate location
-// create and style floating numbers
-// Animate floating numbers
-// add heart toggle
-// add hold functionality

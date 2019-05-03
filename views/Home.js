@@ -4,9 +4,9 @@ import Firebase from '../Firebase';
 import ScrollableHeaderWrapper from '../components/ScrollableHeaderWrapper';
 import { NavigationEvents } from 'react-navigation';
 import PostComponent from '../components/PostComponent';
-import ClapButton from '../components/ClapButton';
-import ClapCounter from '../components/ClapCounter';
-import HeaderToggles from '../components/HeaderToggles';
+import ClapButton from '../components/Clap/ClapButton';
+import ClapCounter from '../components/Clap/ClapCounter';
+import NewsHeaderToggles from '../components/NewsHeaderToggles';
 import Debounce from '../utils/Debounce';
 
 export default class Home extends Component {
@@ -102,7 +102,7 @@ export default class Home extends Component {
         return (
             <ScrollableHeaderWrapper title='News'
                 headerChildComponent={
-                    <HeaderToggles 
+                    <NewsHeaderToggles 
                         onPress={() => this.toggleFilter()} 
                         value={ this.state.isFilteringByClaps } />
                 } >

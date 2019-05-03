@@ -5,10 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const NewsHeaderToggles = () => {
     return (
         <View style={styles.wrapper}>
-            <Text>Message</Text>
-            <Text>Message</Text>
-            <Text>Message</Text>
-            <Text>Message</Text>
+            <Text style={styles.text}>Message</Text>
         </View>
     )
 }
@@ -17,6 +14,9 @@ const styles = StyleSheet.create({
     wrapper: {
         flexDirection: 'column',
         alignItems: 'center'
+    },
+    text: {
+        color: 'white'
     }
 });
 

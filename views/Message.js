@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import ScrollableHeaderWrapper from '../components/ScrollableHeaderWrapper'
+import ChatHeaderToggles from '../components/ScrollableHeaderToggles/ChatHeaderToggles';
 
 export default class Settings extends Component {
     _renderScrollViewContent() {
@@ -18,7 +19,7 @@ export default class Settings extends Component {
     
     render() {
         return (
-        <ScrollableHeaderWrapper title='Chat'>
+        <ScrollableHeaderWrapper title='Chat' headerChildComponent={<ChatHeaderToggles />} >
             {this._renderScrollViewContent()}
         </ScrollableHeaderWrapper>
         )

@@ -6,7 +6,7 @@ import { NavigationEvents } from 'react-navigation';
 import PostComponent from '../components/PostComponent';
 import ClapButton from '../components/Clap/ClapButton';
 import ClapCounter from '../components/Clap/ClapCounter';
-import NewsHeaderToggles from '../components/NewsHeaderToggles';
+import NewsHeaderToggles from '../components/ScrollableHeaderToggles/NewsHeaderToggles';
 import Debounce from '../utils/Debounce';
 
 export default class Home extends Component {

@@ -12,8 +12,8 @@ import {
     TODO add icon dropping from top.
 */
 
-const HEADER_MAX_HEIGHT = 300;
-const HEADER_MIN_HEIGHT = 90;
+const HEADER_MAX_HEIGHT = 220;
+const HEADER_MIN_HEIGHT = 110;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default class ScrollableHeaderWrapper extends Component {
@@ -55,47 +55,30 @@ export default class ScrollableHeaderWrapper extends Component {
             outputRange: [0, 0, -180 ],
             extrapolate: 'clamp'
         });
-    
+
     return (
         <View style={styles.fill}>
             <StatusBar translucent barStyle="light-content" backgroundColor="rgba(0, 0, 0, 0.251)" />
             <Animated.ScrollView
                 style={styles.fill}
                 scrollEventThrottle={1}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
-                    { useNativeDriver: true },
-            )}
+                onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }], { useNativeDriver: true },)}
             >
             <View style={styles.scrollViewContent}>
                 {this.props.children}
             </View>
         </Animated.ScrollView>
-        <Animated.View
-            style={[styles.header,{
-                transform: [{ translateY: headerTranslate }] },
-          ]}
-        >
-        <Animated.Image
-            style={[styles.backgroundImage, {
-                opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }],
-                },
-            ]}
-            source={require('../images/home-gradient.png')}
-          />
+        <Animated.View style={[styles.header,{ transform: [{ translateY: headerTranslate }] },]} >
+            <Animated.Image
+                style={[styles.backgroundImage, { opacity: imageOpacity, transform: [{ translateY: imageTranslate }]},]}
+                source={require('../images/home-gradient.png')}
+            />
         </Animated.View>
-        <Animated.View
-            style={[styles.bar,{
-                transform: [
-                    { scale: titleScale },
-                    { translateY: titleTranslateY },
-                    { translateX: titleTranslateX }
-                    ],
-                },
-          ]}
-        >
-        <Text style={styles.headerTitle}>{this.props.title}</Text>
+        <Animated.View style={[styles.bar,{ transform: [{ scale: titleScale }],},]}>
+            <Animated.Text style={[styles.headerTitle, {transform: [{ translateY: titleTranslateY }, { translateX: titleTranslateX }]}]}>{this.props.title}</Animated.Text>
+            <Animated.View style={[styles.headerChildWrapper, {opacity: imageOpacity}]}>
+                {this.props.headerChildComponent}
+            </Animated.View>
         </Animated.View>
       </View>
     );
@@ -103,6 +86,11 @@ export default class ScrollableHeaderWrapper extends Component {
 }
 
 const styles = StyleSheet.create({
+    headerChildWrapper: {
+        marginTop: 30,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     fill: {
         flex: 1,
     },
@@ -134,6 +122,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         position: 'absolute',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         top: 0,
         left: 0,
         right: 0,

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import Card from './Card';
-import CardSection from './CardSection';
+import { Text, View, StyleSheet, Image } from 'react-native';
+import Card from './Card/Card';
+import CardSection from './Card/CardSection';
 
 const PostComponent = (props) => {
     const { data } = props.post;
@@ -10,8 +10,13 @@ const PostComponent = (props) => {
     return (
         <Card>
             <CardSection>
-                <Text>{ data.postDate }</Text>
+                <Text>{ data.postDate } </Text>
             </CardSection>
+            { 
+                data.imageUrl 
+                ? (<CardSection><Image key={data.id} style={styles.imageStyle} source={{ uri: data.imageUrl }} /></CardSection>)
+                : (<View></View>)
+            }
             <CardSection>
                 <View style={headerContent}>
                     <Text style={headerText}>{ data.post }</Text>
@@ -45,6 +50,7 @@ const styles = StyleSheet.create({
     },
     //interesting! sets image to full width
     imageStyle: {
+        borderRadius: 5,
         height: 300,
         flex: 1,
         width: null

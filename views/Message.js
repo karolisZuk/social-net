@@ -26,17 +26,15 @@ export default class Message extends Component {
   }
 
     _renderScrollViewContent() {
-      /*
-        {this.state.conversations.map(conversation =>
-              <View key={conversation.date} style={styles.row}>
-                <Text>{conversation.author}: {conversation.body}</Text>
-              </View>
-            )}
-      */
         return (
-          <View>
-            
-          </View>
+            <View>
+                {this.state.conversations.map(conversation =>
+                        <View key={conversation.messages[0].date} style={styles.row}>
+                            <Text>{conversation.messages[0].author}:</Text>
+                            <Text> {conversation.messages[0].body}</Text>
+                        </View>
+                )}
+            </View>
         );
       }
     
@@ -64,13 +62,14 @@ export default class Message extends Component {
       }
 
     async getAllConversations(){
-      this.setState({isLoading: true, conversations: []});
-      let conversationsRef = await this.db.collection('conversations');
-      let conversations  = await conversationsRef.where('participants', 'array-contains', Firebase.user.email).get();
-      this.setState({conversations, isLoading: false});
-      this.state.conversations.forEach(doc => {
-        console.log(doc.data());
-      })
+        let result = [];
+        this.setState({isLoading: true, conversations: []});
+        let conversationsRef = await this.db.collection('conversations');
+        let conversations  = await conversationsRef.where('participants', 'array-contains', Firebase.user.email).get();
+        conversations.forEach(doc => {
+            result.push(doc.data());
+        })
+        this.setState({conversations: result, isLoading: false});
     }
     
     render() {

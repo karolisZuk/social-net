@@ -12,14 +12,16 @@ import {
     TODO add icon dropping from top.
 */
 
-const HEADER_MAX_HEIGHT = 300;
-const HEADER_MIN_HEIGHT = 90;
+const HEADER_MAX_HEIGHT =  Platform.OS == 'android' ? 290 : 300
+const HEADER_MIN_HEIGHT =  Platform.OS == 'android' ? 120 : 90
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+ 
 
 export default class ScrollableHeaderWrapper extends Component {
   constructor(props) {
     super(props);
-    this.state = {scrollY: new Animated.Value(0),};
+    this.state = {scrollY: new Animated.Value(0)};
+    
     }
 
     render() {
@@ -74,11 +76,12 @@ export default class ScrollableHeaderWrapper extends Component {
                 scrollEventThrottle={1}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }], { useNativeDriver: true },)}
             >
-            <View style={styles.scrollViewContent}>
+            <View style={[styles.scrollViewContent]}>
                 {this.props.children}
             </View>
         </Animated.ScrollView>
-        <Animated.View style={[styles.header,{ transform: [{ translateY: headerTranslate }] },]} >
+        <Animated.View style={[
+            styles.header,{ transform: [{ translateY: headerTranslate }] },]} >
             <Animated.Image
                 style={[styles.backgroundImage, { opacity: imageOpacity, transform: [{ translateY: imageTranslate }]},]}
                 source={require('../images/home-gradient.png')}

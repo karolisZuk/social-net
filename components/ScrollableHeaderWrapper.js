@@ -34,6 +34,11 @@ export default class ScrollableHeaderWrapper extends Component {
             outputRange: [1, 1, 0],
             extrapolate: 'clamp',
         });
+        const headerChildOpacity = this.state.scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+            outputRange: [1, 0.3, 0],
+            extrapolate: 'clamp',
+        });
         const imageTranslate = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE],
             outputRange: [0, 100],
@@ -43,6 +48,11 @@ export default class ScrollableHeaderWrapper extends Component {
         const titleScale = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
             outputRange: [1, 1, 0.7],
+            extrapolate: 'clamp',
+        });
+        const headerChildScale = this.state.scrollY.interpolate({
+            inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+            outputRange: [1, 0.75, 0.5],
             extrapolate: 'clamp',
         });
         const titleTranslateY = this.state.scrollY.interpolate({
@@ -76,7 +86,7 @@ export default class ScrollableHeaderWrapper extends Component {
         </Animated.View>
         <Animated.View style={[styles.bar,{ transform: [{ scale: titleScale }],},]}>
             <Animated.Text style={[styles.headerTitle, {transform: [{ translateY: titleTranslateY }, { translateX: titleTranslateX }]}]}>{this.props.title}</Animated.Text>
-            <Animated.View style={[styles.headerChildWrapper, {opacity: imageOpacity}]}>
+            <Animated.View style={[styles.headerChildWrapper, {opacity: headerChildOpacity}, {transform:[{scale: headerChildScale}]}]}>
                 {this.props.headerChildComponent}
             </Animated.View>
         </Animated.View>

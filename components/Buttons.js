@@ -17,7 +17,33 @@ const ButtonSecondary = ({onPress, children}) => {
     )
 }
 
+const ButtonHeader = ({onPress, children}) => {
+    return (
+        <TouchableOpacity style={styles.btnHeader} onPress={onPress}>
+            <Text style={styles.btnHeaderText}>{children}</Text>
+        </TouchableOpacity>
+    )
+}
+
 const styles = StyleSheet.create({
+    btnHeader: {
+        margin: 10,
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 15,
+        paddingRight: 15,
+        width: '50%',
+        backgroundColor: '#203c4a',
+        alignItems: 'center',
+        borderColor: 'white',
+        borderRadius: 15,
+        borderWidth: 3
+    },
+    btnHeaderText: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 18,
+    },
     btnPrimary: {
         margin: 10,
         paddingTop: 20,
@@ -54,4 +80,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export { ButtonPrimary, ButtonSecondary } ;
+export { ButtonPrimary, ButtonSecondary, ButtonHeader } ;

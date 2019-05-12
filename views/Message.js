@@ -9,7 +9,9 @@ export default class Message extends Component {
         super(props)
 
         this.db = Firebase.db;
-
+        this.images = {
+            background: require('../images/messages-gradient.png')
+        }
         this.state = {
             recipient: '',
             message: '',
@@ -29,10 +31,10 @@ export default class Message extends Component {
         return (
             <View>
                 {this.state.conversations.map(conversation =>
-                        <View key={conversation.messages[0].date} style={styles.row}>
-                            <Text>{conversation.messages[0].author}:</Text>
-                            <Text> {conversation.messages[0].body}</Text>
-                        </View>
+                    <View key={conversation.messages[0].date} style={styles.row}>
+                        <Text>{conversation.messages[0].author}:</Text>
+                        <Text> {conversation.messages[0].body}</Text>
+                    </View>
                 )}
             </View>
         );
@@ -85,6 +87,12 @@ export default class Message extends Component {
 
                     />
                 } >
+                <ChatHeaderToggles
+                recipient={this.state.recipient}
+                message={this.state.message}
+                onChangeText={value => this.setState(value)}
+                onPress={()=>this.onPressSend()}
+                />
                 {this._renderScrollViewContent()}
         </ScrollableHeaderWrapper>
         )

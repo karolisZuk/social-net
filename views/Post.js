@@ -53,10 +53,10 @@ export default class Post extends Component {
     }
 
     async uploadImage(image, postId){
-        const {uri} = image;
+        const {uri, width, height} = image;
         let storageRef = await Firebase.storage.ref();
         let postsImagesRef = await storageRef.child(`posts/${postId}`);
-        const modifiedImage = await ImageManipulator.manipulateAsync(uri, [{resize: {width: 485, height: 960}}], {compress: 0.5, format:'jpeg'});
+        const modifiedImage = await ImageManipulator.manipulateAsync(uri, [{resize: {width: width/4, height: height/4}}], {compress: 0.5, format:'jpeg'});
         const blob = await this._urlToBlob(modifiedImage.uri);
         postsImagesRef.put(blob).then(snapshot => {
             this.setState({post: '', image: {}, isLoading: false});
@@ -96,10 +96,9 @@ export default class Post extends Component {
                         underlineColorAndroid="transparent"
                         placeholder="Whats going on?"
                         placeholderTextColor="grey"
-                        numberOfLines={10}
-                        multiline={true}
                         onChangeText={text => this.setState({post: text})}
                         value={this.state.post}
+                        maxLength = {360}
                     />
                 </View>
                 <View style={styles.btnWrapper}>
@@ -135,7 +134,7 @@ const styles = StyleSheet.create({
       },
     textArea: {
         height: '70%',
-        margin: 5
+        margin: 5,
     },
     btnWrapper: {
         flexDirection: 'row',

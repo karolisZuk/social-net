@@ -4,7 +4,6 @@ import {
   Platform,
   StatusBar,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -12,7 +11,7 @@ import {
     TODO add icon dropping from top.
 */
 
-const HEADER_MAX_HEIGHT =  Platform.OS == 'android' ? 290 : 300
+const HEADER_MAX_HEIGHT =  Platform.OS == 'android' ? 290 : 220
 const HEADER_MIN_HEIGHT =  Platform.OS == 'android' ? 120 : 90
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
  
@@ -69,31 +68,24 @@ export default class ScrollableHeaderWrapper extends Component {
         });
 
     return (
-        <View style={styles.fill}>
+        <View>
             <StatusBar translucent barStyle="light-content" backgroundColor="rgba(0, 0, 0, 0.251)" />
-            <Animated.ScrollView
-                style={styles.fill}
-                scrollEventThrottle={1}
-                onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }], { useNativeDriver: true },)}
-            >
-            <View style={[styles.scrollViewContent]}>
-                {this.props.children}
-            </View>
-        </Animated.ScrollView>
-        <Animated.View style={[
-            styles.header,{ transform: [{ translateY: headerTranslate }] },]} >
-            <Animated.Image
-                style={[styles.backgroundImage, { opacity: imageOpacity, transform: [{ translateY: imageTranslate }]},]}
-                source={require('../images/home-gradient.png')}
-            />
-        </Animated.View>
-        <Animated.View style={[styles.bar,{ transform: [{ scale: titleScale }],},]}>
-            <Animated.Text style={[styles.headerTitle, {transform: [{ translateY: titleTranslateY }, { translateX: titleTranslateX }]}]}>{this.props.title}</Animated.Text>
-            <Animated.View style={[styles.headerChildWrapper, {opacity: headerChildOpacity}, {transform:[{scale: headerChildScale}]}]}>
-                {this.props.headerChildComponent}
+            <Animated.ScrollView scrollEventThrottle={1} onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }], { useNativeDriver: true },)} >
+                <View style={[styles.scrollViewContent]}>{this.props.children}</View>
+            </Animated.ScrollView>
+            <Animated.View style={[styles.header,{ transform: [{ translateY: headerTranslate }] },]} >
+                <Animated.Image
+                    style={[styles.backgroundImage, { opacity: imageOpacity, transform: [{ translateY: imageTranslate }]},]}
+                    source={require('../images/home-gradient.png')}
+                />
             </Animated.View>
-        </Animated.View>
-      </View>
+            <Animated.View style={[styles.bar,{ transform: [{ scale: titleScale }],},]}>
+                <Animated.Text style={[styles.headerTitle, {transform: [{ translateY: titleTranslateY }, { translateX: titleTranslateX }]}]}>{this.props.title}</Animated.Text>
+                <Animated.View style={[styles.headerChildWrapper, {opacity: headerChildOpacity}, {transform:[{scale: headerChildScale}]}]}>
+                    {this.props.headerChildComponent}
+                </Animated.View>
+            </Animated.View>
+        </View>
     );
   }
 }
@@ -101,15 +93,8 @@ export default class ScrollableHeaderWrapper extends Component {
 const styles = StyleSheet.create({
     headerChildWrapper: {
         marginTop: 30,
-        width: '100%',
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    fill: {
-        flex: 1,
-    },
-    content: {
-        flex: 1,
     },
     header: {
         position: 'absolute',
@@ -117,7 +102,6 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: '#203c4a',
-        overflow: 'hidden',
         height: HEADER_MAX_HEIGHT,
     },
     backgroundImage: {
@@ -131,7 +115,7 @@ const styles = StyleSheet.create({
     },
     bar: {
         backgroundColor: 'transparent',
-        marginTop: Platform.OS === 'ios' ? 48 : 64,
+        marginTop: 44,
         height: 42,
         alignItems: 'center',
         justifyContent: 'center',
@@ -146,10 +130,6 @@ const styles = StyleSheet.create({
         fontSize: 37,
         fontWeight: '700',
         color: 'white'
-    },
-    headerSubtitle: {
-        fontSize: 25,
-        color: 'grey'
     },
     scrollViewContent: {
         marginTop: HEADER_MAX_HEIGHT,

@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import Firebase from '../Firebase';
-import Input from '../components/Input';
+import Input from '../components/Inputs/Input';
 import { ButtonPrimary, ButtonSecondary } from '../components/Buttons';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 

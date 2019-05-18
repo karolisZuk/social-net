@@ -1,22 +1,30 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, TextInput, Text } from 'react-native'
-import { ButtonPrimary } from '../components/Buttons';
+import { ButtonPrimary, ButtonSecondary } from '../components/Buttons';
 import Firebase from '../Firebase';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
+import {ImageManipulator} from 'expo';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Post extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.db = Firebase.db;
         this.state = {
             post: '',
             isLoading: false,
-            error: ''
+            error: '',
+            image: this.props.image
         }
     }
 
+    async componentWillReceiveProps(){
+        let image = this.props.navigation.getParam('imageRef');
+        await this.setState({image});
+    }
+
     onPressPost() {
-        if (!this.state.post) {
+        if (!this.state.post && !this.state.image) {
             return;
         }
         this.setState({isLoading: true})
@@ -25,10 +33,16 @@ export default class Post extends Component {
             userId: Firebase.user.uid,
             userEmail: Firebase.user.email,
             postDate: new Date().toISOString(),
+            withImage: this.state.image ? true : false, 
             claps: 0
-        }).then(() => {
+        }).then(postRef => {
+            if (this.state.image){
+                console.log(this.state.image)
+                this.uploadImage(this.state.image, postRef.id);
+            } else {
             this.setState({post: '', isLoading: false});
             this.props.navigation.navigate('Home');
+            }
         }).catch(err => {
             this.setState({error: err + ''});
             showMessage({
@@ -36,10 +50,43 @@ export default class Post extends Component {
                 type: 'danger'
             });
         })
+    }
 
+    async uploadImage(image, postId){
+        const {uri, width, height} = image;
+        let storageRef = await Firebase.storage.ref();
+        let postsImagesRef = await storageRef.child(`posts/${postId}`);
+        const modifiedImage = await ImageManipulator.manipulateAsync(uri, [{resize: {width: width/4, height: height/4}}], {compress: 0.5, format:'jpeg'});
+        const blob = await this._urlToBlob(modifiedImage.uri);
+        postsImagesRef.put(blob).then(snapshot => {
+            this.setState({post: '', image: {}, isLoading: false});
+            this.props.navigation.navigate('Home');
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    _urlToBlob(url) { 
+        return new Promise((resolve, reject) => {
+            var xhr = new XMLHttpRequest();
+            xhr.onerror = reject;
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4) {
+                    resolve(xhr.response);
+                }
+            };
+            xhr.open('GET', url);
+            xhr.responseType = 'blob'; // convert type
+            xhr.send();
+        })
+    }
+
+    onPressOpenCamera(){
+        this.props.navigation.push('CameraView');
     }
 
     render() {
+
         return (
             <View style={styles.container}>
             <Text style={styles.title}>Post</Text>
@@ -49,15 +96,20 @@ export default class Post extends Component {
                         underlineColorAndroid="transparent"
                         placeholder="Whats going on?"
                         placeholderTextColor="grey"
-                        numberOfLines={10}
-                        multiline={true}
                         onChangeText={text => this.setState({post: text})}
                         value={this.state.post}
+                        maxLength = {360}
                     />
                 </View>
                 <View style={styles.btnWrapper}>
-                    <ButtonPrimary onPress={() => this.onPressPost()}>Post</ButtonPrimary>
+                    <View style={styles.btnContainer}>
+                        <ButtonPrimary onPress={() => this.onPressPost()}>Post</ButtonPrimary>
+                    </View>
+                    <View style={styles.btnContainer}>
+                        <ButtonSecondary onPress={() => this.onPressOpenCamera()}><Icon name={'ios-camera'} color={'#203c4a'} size={20} /> Photo</ButtonSecondary>
+                    </View>
                 </View>
+
                 <FlashMessage position='top'/>
             </View>
         )
@@ -72,7 +124,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 30,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
     },
     textAreaContainer: {
         borderRadius: 10,
@@ -81,13 +133,15 @@ const styles = StyleSheet.create({
         borderWidth: 1,
       },
     textArea: {
-        height: 150,
-        justifyContent: "flex-start",
-        margin: 5
+        height: '70%',
+        margin: 5,
     },
     btnWrapper: {
-        padding: 10,
-        display: 'flex',
-        justifyContent: 'center'
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    btnContainer: {
+        flex: 1,
+        margin: 5
     }
 });

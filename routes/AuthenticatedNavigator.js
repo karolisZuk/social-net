@@ -7,6 +7,7 @@ import Settings from '../views/Settings';
 import Post from '../views/Post';
 import Message from '../views/Message';
 import Icon from 'react-native-vector-icons/Ionicons';
+import CameraView from '../views/CameraView';
 
 export default AuthenticatedNavigator = createMaterialTopTabNavigator({
     Home: createStackNavigator({
@@ -31,6 +32,12 @@ export default AuthenticatedNavigator = createMaterialTopTabNavigator({
     Post: createStackNavigator({
         Post: {
             screen: Post,
+            navigationOptions: {
+                animationEnabled: true
+            }
+        },
+        CameraView: {
+            screen: CameraView,
             navigationOptions: {
                 animationEnabled: true
             }
@@ -60,7 +67,7 @@ export default AuthenticatedNavigator = createMaterialTopTabNavigator({
             headerVisible: false,
         },
         navigationOptions: {
-            tabBarLabel: 'Message',
+            tabBarLabel: 'Chat',
             tabBarIcon: ({tintColor}) => (
                 <Icon name="ios-mail" color={tintColor} size={20} />
             )
